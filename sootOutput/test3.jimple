@@ -1,0 +1,39 @@
+public class test3 extends java.lang.Object
+{
+
+    public static int main()
+    {
+        int a, b, c, temp$0, temp$1, temp$2, temp$3, temp$4, temp$5;
+
+        temp$0 = 1;
+
+        a = temp$0;
+
+        temp$1 = 2;
+
+        b = temp$1;
+
+        temp$2 = a;
+
+        temp$3 = temp$2 + b;
+
+        c = temp$3;
+
+        temp$4 = c;
+
+        temp$5 = temp$4 + a;
+
+        return temp$5;
+    }
+
+    public void <init>()
+    {
+        test3 this;
+
+        this := @this: test3;
+
+        specialinvoke this.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+}

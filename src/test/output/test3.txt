@@ -1,0 +1,4 @@
+a = 1;[a]
+b = 2;[b, a]
+c = a + b;[temp$5]
+return c + a;[]

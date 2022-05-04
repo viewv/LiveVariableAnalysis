@@ -1,0 +1,7 @@
+a = 1;[a]
+b = 2;[a, b]
+c = a + b;[a, c, b]
+for (int i = 0; i < 10; i++) {[a, c, b, i]
+a =  b + 1;[a, i, c, b]
+c = c + a;[c]
+return c;[]

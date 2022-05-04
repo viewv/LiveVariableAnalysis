@@ -1,0 +1,7 @@
+a = 1;[a]
+b = 2;[b, a]
+c = a + b;[c, b, a]
+while (c < 10) {[c, b, a]
+a = b + 1;[c, b, a]
+c = c + a;[c]
+return c;[]

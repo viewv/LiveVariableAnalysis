@@ -1,0 +1,62 @@
+public class test2 extends java.lang.Object
+{
+
+    public static int main()
+    {
+        int a, b, c, temp$0, temp$1, temp$2, temp$3, temp$4, temp$5, temp$6, temp$7;
+
+        temp$0 = 1;
+
+        a = temp$0;
+
+        temp$1 = 2;
+
+        b = temp$1;
+
+        temp$2 = a;
+
+        temp$3 = temp$2 + b;
+
+        c = temp$3;
+
+     label1:
+        nop;
+
+        if c < 10 goto label2;
+
+        goto label3;
+
+     label2:
+        nop;
+
+        temp$4 = b;
+
+        temp$5 = temp$4 + 1;
+
+        a = temp$5;
+
+        goto label1;
+
+     label3:
+        nop;
+
+        temp$6 = c;
+
+        temp$7 = temp$6 + a;
+
+        c = temp$7;
+
+        return c;
+    }
+
+    public void <init>()
+    {
+        test2 this;
+
+        this := @this: test2;
+
+        specialinvoke this.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+}
