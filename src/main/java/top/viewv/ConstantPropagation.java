@@ -2,6 +2,7 @@ package top.viewv;
 
 import soot.Unit;
 import soot.Value;
+import soot.ValueBox;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
@@ -13,7 +14,9 @@ public class ConstantPropagation extends ForwardFlowAnalysis<Unit, ValueMap> {
 
     @Override
     protected void flowThrough(ValueMap in, Unit unit, ValueMap out) {
-
+        for (ValueBox vb : unit.getDefBoxes()) {
+            Value v = vb.getValue();
+        }
     }
 
     @Override
@@ -28,12 +31,8 @@ public class ConstantPropagation extends ForwardFlowAnalysis<Unit, ValueMap> {
             Constant cin1 = in1.get(v);
             if (in2.containsKey(v)) {
                 Constant cin2 = in2.get(v);
-                if (cin1.isConst() && cin2.isConst()) {
-                    if (cin1.equals(cin2)) {
-                        out.put(v, cin1);
-                    }else {
-                        out.put(v, new Constant(Type.NAC));
-                    }
+                if (cin1.isConst() && cin2.isConst() && cin1.equals(cin2)) {
+                    out.put(v, cin1);
                 }else if (cin1.isConst() && cin2.isUndef()) {
                     out.put(v, cin1);
                 }else if (cin2.isConst() && cin1.isUndef()) {
