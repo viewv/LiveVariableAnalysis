@@ -27,6 +27,11 @@ public class LiveVariableAnalysis {
                 System.out.println("Method: " + method.getName());
 
                 Body body = method.retrieveActiveBody();
+
+//                for (Unit unit : body.getUnits()) {
+//                    System.out.println("Unit: " + unit);
+//                }
+
                 Chain<Local> localChain = body.getLocals();
                 List<Local> locals = new ArrayList<>();
                 for (Local local : localChain) {

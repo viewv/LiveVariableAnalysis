@@ -28,8 +28,9 @@ public class Main {
 
         for (String className: SourceLocator.v().getClassesUnder(path)) {
             System.out.println("Class: " + className);
-//            LiveVariableAnalysis lva = new LiveVariableAnalysis(path ,className);
-//            lva.analysis();
+            SootSetup.initSoot(path, className);
+            LiveVariableAnalysis lva = new LiveVariableAnalysis(path ,className);
+            lva.analysis();
             SQLAnalysis sqlAnalysis = new SQLAnalysis(path, className);
             sqlAnalysis.analysis();
             PackManager.v().writeOutput(); //must place after analysis
