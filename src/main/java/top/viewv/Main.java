@@ -40,6 +40,11 @@ public class Main {
 
                     LiveVariable lv = new LiveVariable(graph, body);
                     System.out.println(lv.getInLocals(graph.getTails().get(0)));
+
+                    ControlFlowUnreachable controlFlowUnreachable = new ControlFlowUnreachable(graph);
+                    System.out.println(controlFlowUnreachable.getReachable());
+
+                    UnreachableBranch unreachableBranch = new UnreachableBranch(graph, body, cp);
                 }
             }
             PackManager.v().writeOutput(); //must place after analysis
