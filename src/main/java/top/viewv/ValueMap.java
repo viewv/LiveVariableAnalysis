@@ -1,6 +1,7 @@
 package top.viewv;
 
 import soot.Value;
+import soot.jimple.IntConstant;
 
 import java.util.HashMap;
 
@@ -10,7 +11,11 @@ public class ValueMap extends HashMap<Value, Constant> {
         if (super.containsKey(key)){
             return super.get(key);
         }else {
-            return new Constant(Type.NAC);
+            //如果不存在，则创建一个新的 Constant 对象
+            if (key instanceof IntConstant){
+                return new Constant(((IntConstant) key).value);
+            }
+            return new Constant(Type.UNDEF);
         }
     }
 }

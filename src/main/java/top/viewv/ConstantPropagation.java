@@ -3,11 +3,7 @@ package top.viewv;
 import soot.Local;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
-import soot.jimple.BinopExpr;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.Expr;
-import soot.jimple.Stmt;
+import soot.jimple.*;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
@@ -25,13 +21,19 @@ public class ConstantPropagation extends ForwardFlowAnalysis<Unit, ValueMap> {
             DefinitionStmt def = (DefinitionStmt) stmt;
             Local left = (Local) def.getLeftOp();
             Value right = def.getRightOp();
+            Constant constant = new Constant();
             if (right instanceof Expr) {
                 Expr expr = (Expr) right;
                 if (expr instanceof BinopExpr) {
                     BinopExpr binop = (BinopExpr) expr;
-                    Constant constant = Calculate.calculate(binop, in);
+                    constant = Calculate.calculate(binop, in);
                 }
+            } else if (right instanceof Local) {
+                constant = in.get(right);
+            } else if (right instanceof IntConstant) {
+                constant = new Constant(((IntConstant) right).value);
             }
+            out.put(left, constant);
         }
     }
 

@@ -3,7 +3,6 @@ package top.viewv;
 public class Constant {
 
 
-
     private Type type;
     private int value;
 
