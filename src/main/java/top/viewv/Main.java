@@ -34,14 +34,14 @@ public class Main {
                 if (!"<init>".equals(method.getName())) {
                     Body body = method.retrieveActiveBody();
                     CompleteUnitGraph graph = new CompleteUnitGraph(body);
+
                     ConstantPropagation cp = new ConstantPropagation(graph);
                     System.out.println(cp.getFlowAfter(graph.getTails().get(0)));
+
+                    LiveVariable lv = new LiveVariable(graph, body);
+                    System.out.println(lv.getInLocals(graph.getTails().get(0)));
                 }
             }
-//            LiveVariableAnalysis lva = new LiveVariableAnalysis(path ,className);
-//            lva.analysis();
-//            SQLAnalysis sqlAnalysis = new SQLAnalysis(path, className);
-//            sqlAnalysis.analysis();
             PackManager.v().writeOutput(); //must place after analysis
         }
     }

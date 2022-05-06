@@ -1,4 +1,5 @@
 public class test0 {
+
     public static int main() {
         int a = 11;
         a = a << 2;
@@ -6,6 +7,7 @@ public class test0 {
         b = 11 << b;
         int c = 11;
         c = 11 << 2;
+        c = a++;
         return a;
     }
 }

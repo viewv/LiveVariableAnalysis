@@ -27,23 +27,13 @@ public class LiveVariableAnalysis {
 
                 Body body = method.retrieveActiveBody();
 
-//                for (Unit unit : body.getUnits()) {
-//                    System.out.println("Unit: " + unit);
-//                }
-
                 Chain<Local> localChain = body.getLocals();
                 List<Local> locals = new ArrayList<>();
                 for (Local local : localChain) {
                     locals.add(local);
                 }
 
-
-                System.out.println("All locals: " + locals);
-
-//                ClassicCompleteUnitGraph graph = new ClassicCompleteUnitGraph(body);
                 CompleteUnitGraph graph = new CompleteUnitGraph(body);
-
-                System.out.println("==================");
 
                 // Calculate def-locals for each unit
                 HashMap<Unit, Set<Local>> unitDefLocalsMap = new HashMap<>();
@@ -122,8 +112,6 @@ public class LiveVariableAnalysis {
                 }
 
                 generateOutput(body, unitInLocals, unitOutLocals);
-
-                System.out.println("===========================================================");
             }
         }
     }
