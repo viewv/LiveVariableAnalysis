@@ -1,8 +1,13 @@
 package top.viewv;
 
+import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.BinopExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.Expr;
+import soot.jimple.Stmt;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
@@ -14,8 +19,19 @@ public class ConstantPropagation extends ForwardFlowAnalysis<Unit, ValueMap> {
 
     @Override
     protected void flowThrough(ValueMap in, Unit unit, ValueMap out) {
-        for (ValueBox vb : unit.getDefBoxes()) {
-            Value v = vb.getValue();
+        copy(in, out);
+        Stmt stmt = (Stmt) unit;
+        if (stmt instanceof DefinitionStmt) {
+            DefinitionStmt def = (DefinitionStmt) stmt;
+            Local left = (Local) def.getLeftOp();
+            Value right = def.getRightOp();
+            if (right instanceof Expr) {
+                Expr expr = (Expr) right;
+                if (expr instanceof BinopExpr) {
+                    BinopExpr binop = (BinopExpr) expr;
+                    Constant constant = Calculate.calculate(binop, in);
+                }
+            }
         }
     }
 

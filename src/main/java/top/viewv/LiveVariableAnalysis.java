@@ -17,7 +17,6 @@ public class LiveVariableAnalysis {
     public LiveVariableAnalysis(String sourceDirectory, String clsName) {
         this.sourceDirectory = sourceDirectory;
         this.clsName = clsName;
-        SootSetup.initSoot(sourceDirectory, clsName);
     }
 
     public void analysis() {

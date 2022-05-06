@@ -3,9 +3,10 @@ public class test0 extends java.lang.Object
 
     public static int main()
     {
-        int a, b, c, temp$0, temp$1, temp$2, temp$3, temp$4, temp$5, temp$6, temp$7, temp$8, temp$9;
+        int a, b, c, d, temp$0, temp$1, temp$2, temp$3, temp$4, temp$5, temp$6, temp$7, temp$8, temp$9, temp$10, temp$13;
+        boolean e, f, g, temp$11, h, temp$12;
 
-        temp$0 = 1;
+        temp$0 = 5;
 
         a = temp$0;
 
@@ -19,36 +20,99 @@ public class test0 extends java.lang.Object
 
         c = temp$3;
 
-        temp$4 = a;
+        temp$4 = 57678;
 
-        temp$5 = temp$4 + c;
+        d = temp$4;
 
-        if temp$5 == 4 goto label1;
+        temp$5 = a;
 
-        goto label2;
+        temp$6 = temp$5 + c;
 
-     label1:
+        if temp$6 == 4 goto label01;
+
+        goto label02;
+
+     label01:
         nop;
 
-        temp$6 = c;
+        temp$7 = c;
 
-        temp$7 = temp$6 + a;
+        temp$8 = temp$7 + a;
 
-        c = temp$7;
+        c = temp$8;
 
-        goto label3;
+        goto label03;
 
-     label2:
+     label02:
         nop;
 
-        temp$8 = c;
+        temp$9 = c;
 
-        temp$9 = temp$8 + b;
+        temp$10 = temp$9 + b;
 
-        c = temp$9;
+        c = temp$10;
 
-     label3:
+     label03:
         nop;
+
+        e = 1;
+
+        f = 0;
+
+        if e == 0 goto label05;
+
+        goto label04;
+
+     label04:
+        nop;
+
+        if f == 0 goto label05;
+
+        goto label06;
+
+        goto label06;
+
+     label05:
+        nop;
+
+        temp$11 = 0;
+
+        goto label07;
+
+     label06:
+        nop;
+
+        temp$11 = 1;
+
+     label07:
+        nop;
+
+        g = temp$11;
+
+        if e == f goto label09;
+
+        goto label08;
+
+     label08:
+        nop;
+
+        temp$12 = 0;
+
+        goto label10;
+
+     label09:
+        nop;
+
+        temp$12 = 1;
+
+     label10:
+        nop;
+
+        h = temp$12;
+
+        temp$13 = c << d;
+
+        c = temp$13;
 
         return c;
     }
