@@ -1,13 +1,14 @@
 public class test0 {
 
     public static int main() {
-        int a = 11;
-        a = a << 2;
-        int b = 11;
-        b = 11 << b;
-        int c = 11;
-        c = 11 << 2;
-        c = a++;
-        return a;
+        int a = 10;
+        int b = 3;
+        int z;
+        if (a > b) {
+            z = 11;
+        }else {
+            z = 12;
+        }
+        return z;
     }
 }

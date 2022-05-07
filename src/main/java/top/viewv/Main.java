@@ -5,7 +5,9 @@ import soot.*;
 import soot.toolkits.graph.CompleteUnitGraph;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
@@ -45,13 +47,13 @@ public class Main {
                     ReachMap reachMap = unreachableBranch.getReachMap();
 
                     DeadCodeDetection deadCodeDetection = new DeadCodeDetection(body,graph,reachMap,cp,lv,cf);
-                    DeadCodeMap deadCodeMap = deadCodeDetection.getDeadCodeMap();
+                    //DeadCodeMap deadCodeMap = deadCodeDetection.getDeadCodeMap();
 
-                    for (Unit unit : graph) {
-                        if (!deadCodeMap.get(unit)) {
-                            System.out.println(unit);
-                        }
-                    }
+                    Set<Integer> liveLines = deadCodeDetection.getLiveCodeLines();
+                    System.out.println("Live Lines: " + liveLines);
+
+                    Set<Integer> deadLines = deadCodeDetection.getDeadCodeLines();
+                    System.out.println("Dead Lines: " + deadLines);
                 }
             }
             PackManager.v().writeOutput(); //must place after analysis

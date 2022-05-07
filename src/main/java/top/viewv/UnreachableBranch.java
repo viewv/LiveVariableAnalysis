@@ -24,7 +24,7 @@ public class UnreachableBranch {
         this.graph = graph;
         this.body = body;
         this.constantPropagation = constantPropagation;
-        // we assume we only have one entry point and one exit point
+        // we assume only have one entry point and one exit point
         head = graph.getHeads().get(0);
         tail = graph.getTails().get(0);
         analysis(head);
@@ -54,16 +54,15 @@ public class UnreachableBranch {
                         int constant1Value = constant1.getValue();
                         int constant2Value = constant2.getValue();
                         boolean result = calculate(constant1Value, constant2Value, op);
-                        Unit target = ifStmt.getTarget();
                         if (result){
-                            unit = target;
+                            unit = ifStmt.getTarget();
                         }else {
-                            Unit falseTarget = body.getUnits().getSuccOf(ifStmt);
-                            unit = falseTarget;
+                            unit = body.getUnits().getSuccOf(ifStmt);
                         }
                     }
                 }
             }else if (stmt instanceof LookupSwitchStmt){
+                reachMap.put(unit, true);
                 LookupSwitchStmt lookupSwitchStmt = (LookupSwitchStmt) stmt;
                 List<IntConstant> lookupValues = lookupSwitchStmt.getLookupValues();
                 List<Integer> lookupIntegers = new ArrayList<>();
@@ -82,6 +81,7 @@ public class UnreachableBranch {
                     unit = target;
                 }
             } else if (stmt instanceof TableSwitchStmt){
+                reachMap.put(unit, true);
                 TableSwitchStmt tableSwitchStmt = (TableSwitchStmt) stmt;
                 int lowIndex = tableSwitchStmt.getLowIndex();
                 int highIndex = tableSwitchStmt.getHighIndex();
