@@ -29,8 +29,6 @@ public class DeadCodeDetection {
 
     private Set<Integer> sideEffectLines = new HashSet<>();
 
-    //NaiveSideEffectTester sideEffectTester = new NaiveSideEffectTester();
-    //PASideEffectTester sideEffectTester = new PASideEffectTester();
 
     public DeadCodeDetection(Body body, DirectedGraph<Unit> graph, ReachMap reachMap, ConstantPropagation constantPropagation, LiveVariable lv, ControlFlowUnreachable controlFlowUnreachable) {
         this.body = body;
@@ -39,8 +37,6 @@ public class DeadCodeDetection {
         this.constantPropagation = constantPropagation;
         this.lv = lv;
         this.controlFlowUnreachable = controlFlowUnreachable;
-
-        //sideEffectTester.newMethod(body.getMethod());
 
         this.analysis();
         this.generateLiveCodeLines();
@@ -63,7 +59,7 @@ public class DeadCodeDetection {
         for (Unit unit : graph) {
             if (!deadCodeMap.get(unit)) {
                 Stmt stmt = (Stmt) unit;
-                if (stmt instanceof NopStmt || stmt instanceof GotoStmt) {
+                if (stmt instanceof NopStmt || stmt instanceof GotoStmt || stmt instanceof IdentityStmt) {
                     continue;
                 }
                 liveCodeLines.add(stmt.getJavaSourceStartLineNumber());
@@ -75,7 +71,7 @@ public class DeadCodeDetection {
         for (Unit unit : graph) {
             if (deadCodeMap.get(unit)) {
                 Stmt stmt = (Stmt) unit;
-                if (stmt instanceof NopStmt || stmt instanceof GotoStmt) {
+                if (stmt instanceof NopStmt || stmt instanceof GotoStmt || stmt instanceof IdentityStmt) {
                     continue;
                 }
                 String reason = deadReason.get(unit);
@@ -90,7 +86,7 @@ public class DeadCodeDetection {
     private void analysis() {
         for (Unit unit : graph) {
             Stmt stmt = (Stmt) unit;
-            if (stmt instanceof NopStmt || stmt instanceof GotoStmt) {
+            if (stmt instanceof NopStmt || stmt instanceof GotoStmt || stmt instanceof IdentityStmt) {
                 continue;
             }
             if (reachMap.get(unit)) {

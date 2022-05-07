@@ -36,6 +36,7 @@ public class Main {
             for (SootMethod method : sc.getMethods()) {
                 if (!"<init>".equals(method.getName())) {
                     System.out.println("Method: " + method.getName());
+
                     Body body = method.retrieveActiveBody();
                     CompleteUnitGraph graph = new CompleteUnitGraph(body);
 

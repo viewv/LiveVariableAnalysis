@@ -25,7 +25,7 @@ class UnreachableIfBranch {
                 z = 7000;
                 break;
         }
-        int k = z++;
+        int k = z;
         int m = z;
         if (z > m) {
             k = z;
