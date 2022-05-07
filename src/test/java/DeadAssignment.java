@@ -11,7 +11,6 @@ class DeadAssignment {
         }else {
             y = 2000;
         }
-        System.out.println(y);
     }
 
     int use(int n) {

@@ -1,5 +1,6 @@
 package top.viewv;
 
+import fj.Hash;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -7,6 +8,8 @@ import soot.jimple.*;
 import soot.toolkits.graph.DirectedGraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class UnreachableBranch {
@@ -17,6 +20,8 @@ public class UnreachableBranch {
     private ReachMap reachMap = new ReachMap();
 
     private ConstantPropagation constantPropagation;
+
+    private HashSet<Unit> visitor = new HashSet<>();
 
     Unit head, tail;
 
@@ -36,6 +41,9 @@ public class UnreachableBranch {
     }
 
     public void analysis(Unit unit){
+        if(visitor.contains(unit)){
+            return;
+        }
         while (this.graph.getSuccsOf(unit).size() > 0){
             Stmt stmt = (Stmt) unit;
             ValueMap inValueMap = constantPropagation.getFlowBefore(unit);
@@ -98,6 +106,7 @@ public class UnreachableBranch {
                     unit = target;
                 }
             }
+            visitor.add(unit);
             reachMap.put(unit, true);
             List<Unit> succeeds = this.graph.getSuccsOf(unit);
             if (succeeds.size() == 1){

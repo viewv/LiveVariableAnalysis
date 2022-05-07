@@ -1,8 +1,10 @@
 package top.viewv;
 
-import soot.*;
+import soot.Body;
+import soot.Local;
+import soot.Unit;
+import soot.Value;
 import soot.jimple.*;
-import soot.jimple.toolkits.pointer.PASideEffectTester;
 import soot.toolkits.graph.DirectedGraph;
 
 import java.util.HashMap;
