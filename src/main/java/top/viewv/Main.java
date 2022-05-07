@@ -36,20 +36,20 @@ public class Main {
                     CompleteUnitGraph graph = new CompleteUnitGraph(body);
 
                     ConstantPropagation cp = new ConstantPropagation(graph);
-                    System.out.println(cp.getFlowAfter(graph.getTails().get(0)));
 
                     LiveVariable lv = new LiveVariable(graph, body);
-                    System.out.println(lv.getInLocals(graph.getTails().get(0)));
 
-                    ControlFlowUnreachable controlFlowUnreachable = new ControlFlowUnreachable(graph);
-                    System.out.println(controlFlowUnreachable.getReachable());
+                    ControlFlowUnreachable cf = new ControlFlowUnreachable(graph);
 
                     UnreachableBranch unreachableBranch = new UnreachableBranch(graph, body, cp);
                     ReachMap reachMap = unreachableBranch.getReachMap();
-                    System.out.println(graph.getSuccsOf(graph.getTails().get(0)));
-                    for (Unit unit: graph) {
-                        if (reachMap.containsKey(unit)) {
-                            System.out.println(unit + ": " + reachMap.get(unit));
+
+                    DeadCodeDetection deadCodeDetection = new DeadCodeDetection(body,graph,reachMap,cp,lv,cf);
+                    DeadCodeMap deadCodeMap = deadCodeDetection.getDeadCodeMap();
+
+                    for (Unit unit : graph) {
+                        if (!deadCodeMap.get(unit)) {
+                            System.out.println(unit);
                         }
                     }
                 }

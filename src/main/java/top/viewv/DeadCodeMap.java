@@ -4,7 +4,7 @@ import soot.Unit;
 
 import java.util.HashMap;
 
-public class ReachMap extends HashMap<Unit, Boolean> {
+public class DeadCodeMap extends HashMap<Unit, Boolean> {
     @Override
     public Boolean get(Object key) {
         if (containsKey(key)) {

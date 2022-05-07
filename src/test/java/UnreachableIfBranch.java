@@ -9,7 +9,7 @@ class UnreachableIfBranch {
         } else {
             z = 200; // unreachable branch
         }
-        switch (2) {
+        switch (y) {
             case 1:
                 z = 1000;
                 break;
@@ -25,8 +25,8 @@ class UnreachableIfBranch {
                 z = 7000;
                 break;
         }
-        int k = z;
-        int m = 10;
+        int k = z++;
+        int m = z;
         if (z > m) {
             k = z;
         }else {

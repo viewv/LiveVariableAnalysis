@@ -9,7 +9,7 @@ import java.util.Set;
 public class ControlFlowUnreachable {
 
     private DirectedGraph<Unit> graph;
-    Set<Integer> reachable = new HashSet<>();
+    private Set<Integer> reachable = new HashSet<>();
 
     public ControlFlowUnreachable(DirectedGraph<Unit> graph) {
         this.graph = graph;
