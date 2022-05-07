@@ -1,4 +1,4 @@
-public class test0 extends java.lang.Object
+public class SimpleIfBranch extends java.lang.Object
 {
 
     public static int main()
@@ -37,9 +37,9 @@ public class test0 extends java.lang.Object
 
     public void <init>()
     {
-        test0 this;
+        SimpleIfBranch this;
 
-        this := @this: test0;
+        this := @this: SimpleIfBranch;
 
         specialinvoke this.<java.lang.Object: void <init>()>();
 

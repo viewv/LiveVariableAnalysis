@@ -1,4 +1,4 @@
-public class test0 {
+public class SimpleIfBranch {
 
     public static int main() {
         int a = 10;
