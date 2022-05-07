@@ -43,6 +43,7 @@ public class UnreachableBranch {
             if (stmt instanceof IfStmt){
                 IfStmt ifStmt = (IfStmt) stmt;
                 Value condition = ifStmt.getCondition();
+                reachMap.put(unit, true);
                 if (condition instanceof ConditionExpr){
                     ConditionExpr conditionExpr = (ConditionExpr) condition;
                     Value op1 = conditionExpr.getOp1();
@@ -106,6 +107,7 @@ public class UnreachableBranch {
                 for (Unit succeed : succeeds){
                     this.analysis(succeed);
                 }
+                // jump out of the loop
                 unit = body.getUnits().getSuccOf(unit);
             }
         }

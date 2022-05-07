@@ -2,22 +2,21 @@ class UnreachableIfBranch {
 
     int branch() {
         int x = 10;
-        int y = 4;
+        int y = 2;
         int z;
         if (x > y) {
             z = 100;
         } else {
             z = 200; // unreachable branch
         }
-        switch (z) {
+        switch (2) {
             case 1:
                 z = 1000;
                 break;
             case 2:
-                z = 2000; // unreachable branch
-                break;
+                z = 2000;
             case 3:
-                z = 3000; // unreachable branch
+                z = 3000;
                 break;
             case 6:
                 z = 4000; // unreachable branch
