@@ -1,8 +1,6 @@
 package top.viewv;
 
-import soot.G;
-import soot.Scene;
-import soot.SootClass;
+import soot.*;
 import soot.options.Options;
 
 import java.util.Collections;
@@ -30,5 +28,7 @@ public class SootSetup {
         SootClass sootClass = Scene.v().loadClassAndSupport(classname);
         sootClass.setApplicationClass();
         Scene.v().loadNecessaryClasses();
+
+        //PackManager.v().runPacks();
     }
 }

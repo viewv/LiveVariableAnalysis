@@ -2,12 +2,20 @@ class DeadAssignment {
 
     void deadAssign() {
         int x = 1;
-        int y = x + 2; // dead assignment
+        int y = x + 2;
         int z = x + 3;
-        use(z);
-        int a = x; // dead assignment
+        y = use(z);
+        int a = x;
+        if (x < 0) {
+            y = 1000;
+        }else {
+            y = 2000;
+        }
     }
 
-    void use(int n) {
+    int use(int n) {
+        n = n + 1;
+        System.out.println(n);
+        return n + 1;
     }
 }

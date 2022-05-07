@@ -1,14 +1,11 @@
 package top.viewv;
 
-import soot.Body;
-import soot.Local;
-import soot.Unit;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.GotoStmt;
-import soot.jimple.NopStmt;
-import soot.jimple.Stmt;
+import soot.*;
+import soot.jimple.*;
+import soot.jimple.toolkits.pointer.PASideEffectTester;
 import soot.toolkits.graph.DirectedGraph;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,9 +19,16 @@ public class DeadCodeDetection {
 
     private DeadCodeMap deadCodeMap = new DeadCodeMap();
 
+    private HashMap<Unit, String> deadReason = new HashMap<>();
+
     private Set<Integer> liveCodeLines = new HashSet<>();
 
-    private Set<Integer> deadCodeLines = new HashSet<>();
+    private HashMap<Integer,String> deadCodeLines = new HashMap<>();
+
+    private Set<Integer> sideEffectLines = new HashSet<>();
+
+    //NaiveSideEffectTester sideEffectTester = new NaiveSideEffectTester();
+    //PASideEffectTester sideEffectTester = new PASideEffectTester();
 
     public DeadCodeDetection(Body body, DirectedGraph<Unit> graph, ReachMap reachMap, ConstantPropagation constantPropagation, LiveVariable lv, ControlFlowUnreachable controlFlowUnreachable) {
         this.body = body;
@@ -33,6 +37,9 @@ public class DeadCodeDetection {
         this.constantPropagation = constantPropagation;
         this.lv = lv;
         this.controlFlowUnreachable = controlFlowUnreachable;
+
+        //sideEffectTester.newMethod(body.getMethod());
+
         this.analysis();
         this.generateLiveCodeLines();
         this.generateDeadCodeLines();
@@ -46,7 +53,7 @@ public class DeadCodeDetection {
         return liveCodeLines;
     }
 
-    public Set<Integer> getDeadCodeLines() {
+    public HashMap<Integer, String> getDeadCodeLines() {
         return deadCodeLines;
     }
 
@@ -69,26 +76,38 @@ public class DeadCodeDetection {
                 if (stmt instanceof NopStmt || stmt instanceof GotoStmt) {
                     continue;
                 }
-                deadCodeLines.add(stmt.getJavaSourceStartLineNumber());
+                String reason = deadReason.get(unit);
+                int sourceCodeline = stmt.getJavaSourceStartLineNumber();
+                if(!sideEffectLines.contains(sourceCodeline)){
+                    deadCodeLines.put(sourceCodeline, reason);
+                }
             }
         }
     }
 
-
-
     private void analysis() {
         for (Unit unit : graph) {
+            Stmt stmt = (Stmt) unit;
+            if (stmt instanceof NopStmt || stmt instanceof GotoStmt) {
+                continue;
+            }
             if (reachMap.get(unit)) {
-                Stmt stmt = (Stmt) unit;
                 if (stmt instanceof DefinitionStmt) {
                     DefinitionStmt def = (DefinitionStmt) stmt;
                     Local left = (Local) def.getLeftOp();
-                    Set<Local> unitOutLocal = lv.getOutLocals(unit);
-                    if (!unitOutLocal.contains(left)) {
-                        deadCodeMap.put(unit, true);
+                    Value right = def.getRightOp();
+                    if (right instanceof InvokeExpr){
+                        sideEffectLines.add(stmt.getJavaSourceStartLineNumber());
+                    }else {
+                        Set<Local> unitOutLocal = lv.getOutLocals(unit);
+                        if (!unitOutLocal.contains(left)) {
+                            deadReason.put(unit, "dead assignment");
+                            deadCodeMap.put(unit, true);
+                        }
                     }
                 }
             }else {
+                deadReason.put(unit, "unreachable branch");
                 deadCodeMap.put(unit, true);
             }
         }
