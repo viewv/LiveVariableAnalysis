@@ -45,6 +45,13 @@ public class Main {
                     System.out.println(controlFlowUnreachable.getReachable());
 
                     UnreachableBranch unreachableBranch = new UnreachableBranch(graph, body, cp);
+                    ReachMap reachMap = unreachableBranch.getReachMap();
+                    System.out.println(graph.getSuccsOf(graph.getTails().get(0)));
+                    for (Unit unit: graph) {
+                        if (reachMap.containsKey(unit)) {
+                            System.out.println(unit + ": " + reachMap.get(unit));
+                        }
+                    }
                 }
             }
             PackManager.v().writeOutput(); //must place after analysis

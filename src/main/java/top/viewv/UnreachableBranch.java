@@ -7,6 +7,7 @@ import soot.jimple.*;
 import soot.toolkits.graph.DirectedGraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class UnreachableBranch {
@@ -18,19 +19,28 @@ public class UnreachableBranch {
 
     private ConstantPropagation constantPropagation;
 
+    Unit head, tail;
+
     public UnreachableBranch(DirectedGraph<Unit> graph, Body body ,ConstantPropagation constantPropagation) {
         this.graph = graph;
         this.body = body;
         this.constantPropagation = constantPropagation;
-        analysis();
+        // we assume we only have one entry point and one exit point
+        head = graph.getHeads().get(0);
+        tail = graph.getTails().get(0);
+        analysis(head);
+        reachMap.put(tail, true);
     }
 
-    public void analysis(){
-        for (Unit unit : graph){
+    public ReachMap getReachMap() {
+        return reachMap;
+    }
+
+    public void analysis(Unit unit){
+        while (this.graph.getSuccsOf(unit).size() > 0){
             Stmt stmt = (Stmt) unit;
             ValueMap inValueMap = constantPropagation.getFlowBefore(unit);
             if (stmt instanceof IfStmt){
-                System.out.println(stmt);
                 IfStmt ifStmt = (IfStmt) stmt;
                 Value condition = ifStmt.getCondition();
                 if (condition instanceof ConditionExpr){
@@ -44,10 +54,12 @@ public class UnreachableBranch {
                         int constant1Value = constant1.getValue();
                         int constant2Value = constant2.getValue();
                         boolean result = calculate(constant1Value, constant2Value, op);
+                        Unit target = ifStmt.getTarget();
                         if (result){
-                            reachMap.put(ifStmt, true);
-                            Unit target = ifStmt.getTarget();
-                            graph.getSuccsOf(target).forEach(succeed -> reachMap.put(succeed, true));
+                            unit = target;
+                        }else {
+                            Unit falseTarget = body.getUnits().getSuccOf(ifStmt);
+                            unit = falseTarget;
                         }
                     }
                 }
@@ -59,15 +71,42 @@ public class UnreachableBranch {
                 List<Unit> targets = lookupSwitchStmt.getTargets();
                 Value key = lookupSwitchStmt.getKey();
                 Constant constant = inValueMap.get(key);
-                Unit target;
-                if (lookupIntegers.contains(constant.getValue())){
-                    int index = lookupIntegers.indexOf(constant.getValue());
-                    target = targets.get(index);
-                }else {
-                    target = lookupSwitchStmt.getDefaultTarget();
+                if (constant.isConst()){
+                    Unit target;
+                    if (lookupIntegers.contains(constant.getValue())){
+                        int index = lookupIntegers.indexOf(constant.getValue());
+                        target = targets.get(index);
+                    }else {
+                        target = lookupSwitchStmt.getDefaultTarget();
+                    }
+                    unit = target;
                 }
-                graph.getSuccsOf(target).forEach(succeed -> reachMap.put(succeed, true));
-                System.out.println(reachMap);
+            } else if (stmt instanceof TableSwitchStmt){
+                TableSwitchStmt tableSwitchStmt = (TableSwitchStmt) stmt;
+                int lowIndex = tableSwitchStmt.getLowIndex();
+                int highIndex = tableSwitchStmt.getHighIndex();
+                Value key = tableSwitchStmt.getKey();
+                Constant constant = inValueMap.get(key);
+                if (constant.isConst()){
+                    int constantValue = constant.getValue();
+                    Unit target;
+                    if (constantValue >= lowIndex && constantValue <= highIndex){
+                        target = tableSwitchStmt.getTarget(constant.getValue() - lowIndex);
+                    }else {
+                        target = tableSwitchStmt.getDefaultTarget();
+                    }
+                    unit = target;
+                }
+            }
+            reachMap.put(unit, true);
+            List<Unit> succeeds = this.graph.getSuccsOf(unit);
+            if (succeeds.size() == 1){
+                unit = succeeds.get(0);
+            }else {
+                for (Unit succeed : succeeds){
+                    this.analysis(succeed);
+                }
+                unit = body.getUnits().getSuccOf(unit);
             }
         }
     }
