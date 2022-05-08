@@ -1,0 +1,90 @@
+class DeadAssignment extends java.lang.Object
+{
+
+    void deadAssign()
+    {
+        DeadAssignment this;
+        int x, y, temp$0, z, temp$1, temp$2, a, temp$3, temp$4;
+
+        this := @this: DeadAssignment;
+
+        x = 1;
+
+        temp$0 = x;
+
+        y = temp$0 + 2;
+
+        temp$1 = x;
+
+        z = temp$1 + 3;
+
+        temp$2 = virtualinvoke this.<DeadAssignment: int use(int)>(z);
+
+        y = temp$2;
+
+        a = x;
+
+        if x < 0 goto label1;
+
+        goto label2;
+
+     label1:
+        nop;
+
+        temp$3 = 1000;
+
+        y = temp$3;
+
+        goto label3;
+
+     label2:
+        nop;
+
+        temp$4 = 2000;
+
+        y = temp$4;
+
+     label3:
+        nop;
+
+        return;
+    }
+
+    int use(int)
+    {
+        java.io.PrintStream temp$2;
+        int n, temp$0, temp$1, temp$3, temp$4;
+        DeadAssignment this;
+
+        this := @this: DeadAssignment;
+
+        n := @parameter0: int;
+
+        temp$0 = n;
+
+        temp$1 = temp$0 + 1;
+
+        n = temp$1;
+
+        temp$2 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke temp$2.<java.io.PrintStream: void println(int)>(n);
+
+        temp$3 = n;
+
+        temp$4 = temp$3 + 1;
+
+        return temp$4;
+    }
+
+    void <init>()
+    {
+        DeadAssignment this;
+
+        this := @this: DeadAssignment;
+
+        specialinvoke this.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+}

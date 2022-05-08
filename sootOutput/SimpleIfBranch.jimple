@@ -1,4 +1,4 @@
-public class top.viewv.testcase.SimpleIfBranch extends java.lang.Object
+public class SimpleIfBranch extends java.lang.Object
 {
 
     public static int main()
@@ -37,9 +37,9 @@ public class top.viewv.testcase.SimpleIfBranch extends java.lang.Object
 
     public void <init>()
     {
-        top.viewv.testcase.SimpleIfBranch this;
+        SimpleIfBranch this;
 
-        this := @this: top.viewv.testcase.SimpleIfBranch;
+        this := @this: SimpleIfBranch;
 
         specialinvoke this.<java.lang.Object: void <init>()>();
 

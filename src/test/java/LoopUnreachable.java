@@ -1,4 +1,4 @@
-public class CFGUnreach {
+public class LoopUnreachable {
     public static int main(String[] args) {
         int x = 0;
         int y = 5;

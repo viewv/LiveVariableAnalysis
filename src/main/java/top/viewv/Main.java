@@ -4,10 +4,7 @@ import org.apache.commons.cli.*;
 import soot.*;
 import soot.toolkits.graph.CompleteUnitGraph;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +49,6 @@ public class Main {
                     ReachMap reachMap = unreachableBranch.getReachMap();
 
                     DeadCodeDetection deadCodeDetection = new DeadCodeDetection(body,graph,reachMap,cp,lv,cf);
-                    //DeadCodeMap deadCodeMap = deadCodeDetection.getDeadCodeMap();
-
-                    //Set<Integer> liveLines = deadCodeDetection.getLiveCodeLines();
-                    //System.out.println("Live Lines: " + liveLines);
 
                     HashMap<Integer, String> deadLines = deadCodeDetection.getDeadCodeLines();
 
@@ -69,11 +62,25 @@ public class Main {
                             lineNumber++;
                         }
                         bufferedReader.close();
+
+                        File sourceFile = new File(path + File.separator + className + ".java");
+                        File sourFileParent = new File(sourceFile.getParent());
+                        File outPutDir = new File(sourFileParent.getParent() + File.separator + "output");
+                        if (!outPutDir.exists()) {
+                            outPutDir.mkdir();
+                        }
+                        File outPutFile = new File(outPutDir + File.separator + className + ".txt");
+                        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outPutFile));
+
                         for (int i: lineMap.keySet()) {
                             if (deadLines.containsKey(i)) {
-                                System.out.println("Line " + i + " : " + lineMap.get(i).trim() + " " + deadLines.get(i));
+                                String outputLine = "Line " + i + " : " + lineMap.get(i).trim() + " " + deadLines.get(i) + ";\n";
+                                System.out.print(outputLine);
+                                bufferedWriter.write(outputLine);
                             }
                         }
+
+                        bufferedWriter.close();
                     } catch (IOException e) {
                         System.out.println("Source file not found!");
                     }
