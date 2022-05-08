@@ -32,6 +32,7 @@ public class Main {
             System.out.println("Class: " + className);
             SootSetup.initSoot(path, className);
             SootClass sc = Scene.v().getSootClass(className);
+            HashMap<Integer, String> deadLines = new HashMap<>();
             for (SootMethod method : sc.getMethods()) {
                 if (!"<init>".equals(method.getName())) {
                     System.out.println("Method: " + method.getName());
@@ -50,41 +51,39 @@ public class Main {
 
                     DeadCodeDetection deadCodeDetection = new DeadCodeDetection(body,graph,reachMap,cp,lv,cf);
 
-                    HashMap<Integer, String> deadLines = deadCodeDetection.getDeadCodeLines();
+                    deadLines.putAll(deadCodeDetection.getDeadCodeLines());
+                }
+            }
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(path + File.separator + className + ".java"));
+                String line;
+                HashMap<Integer, String> lineMap = new HashMap<>();
+                int lineNumber = 1;
+                while ((line = bufferedReader.readLine()) != null) {
+                    lineMap.put(lineNumber, line);
+                    lineNumber++;
+                }
+                bufferedReader.close();
 
-                    try {
-                        BufferedReader bufferedReader = new BufferedReader(new FileReader(path + File.separator + className + ".java"));
-                        String line;
-                        HashMap<Integer, String> lineMap = new HashMap<>();
-                        int lineNumber = 1;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            lineMap.put(lineNumber, line);
-                            lineNumber++;
-                        }
-                        bufferedReader.close();
+                File sourceFile = new File(path + File.separator + className + ".java");
+                File sourFileParent = new File(sourceFile.getParent());
+                File outPutDir = new File(sourFileParent.getParent() + File.separator + "output");
+                if (!outPutDir.exists()) {
+                    outPutDir.mkdir();
+                }
+                File outPutFile = new File(outPutDir + File.separator + className + ".txt");
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outPutFile));
 
-                        File sourceFile = new File(path + File.separator + className + ".java");
-                        File sourFileParent = new File(sourceFile.getParent());
-                        File outPutDir = new File(sourFileParent.getParent() + File.separator + "output");
-                        if (!outPutDir.exists()) {
-                            outPutDir.mkdir();
-                        }
-                        File outPutFile = new File(outPutDir + File.separator + className + ".txt");
-                        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outPutFile));
-
-                        for (int i: lineMap.keySet()) {
-                            if (deadLines.containsKey(i)) {
-                                String outputLine = "Line " + i + " : " + lineMap.get(i).trim() + " " + deadLines.get(i) + ";\n";
-                                System.out.print(outputLine);
-                                bufferedWriter.write(outputLine);
-                            }
-                        }
-
-                        bufferedWriter.close();
-                    } catch (IOException e) {
-                        System.out.println("Source file not found!");
+                for (int i: lineMap.keySet()) {
+                    if (deadLines.containsKey(i)) {
+                        String outputLine = "Line " + i + " : " + lineMap.get(i).trim() + " " + deadLines.get(i) + ";\n";
+                        System.out.print(outputLine);
+                        bufferedWriter.write(outputLine);
                     }
                 }
+                bufferedWriter.close();
+            } catch (IOException e) {
+                System.out.println("Source file not found!");
             }
             PackManager.v().writeOutput(); //must place after analysis
         }
