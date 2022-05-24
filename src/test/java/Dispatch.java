@@ -1,4 +1,4 @@
-public class Dispatch {
+public class Dispatch implements InterfaceDemo {
     class A {
         public void foo() {
             System.out.println("A.foo");
@@ -18,6 +18,17 @@ public class Dispatch {
         System.out.println("test");
     }
 
+    @Override
+    public void demo1() {
+        System.out.println("Interface demo1");
+    }
+
+
+    @Override
+    public void demo2() {
+        System.out.println("Interface demo2");
+    }
+
     public void main(String[] args) {
         Dispatch.test();
 
@@ -26,5 +37,9 @@ public class Dispatch {
 
         A y = new C();
         y.foo();
+
+        InterfaceDemo z = new Dispatch();
+        z.demo1();
+        z.demo2();
     }
 }

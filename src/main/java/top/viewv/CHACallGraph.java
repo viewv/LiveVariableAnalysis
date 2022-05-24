@@ -60,9 +60,20 @@ public class CHACallGraph {
             result.add(dispatchMethod);
         }else if (invokeExpr instanceof VirtualInvokeExpr){
             SootClass targetClass = targetMethod.getDeclaringClass();
+            while (targetClass.hasSuperclass()){
+                targetClass = targetClass.getSuperclass();
+            }
             HashSet<SootClass> subClasses = new HashSet<>();
             subClasses.add(targetClass);
             subClasses.addAll(Scene.v().getActiveHierarchy().getSubclassesOfIncluding(targetClass));
+            for (SootClass subClass : subClasses) {
+                SootMethod dispatchMethod = dispatch(subClass, targetMethod);
+                result.add(dispatchMethod);
+            }
+        }else if (invokeExpr instanceof InterfaceInvokeExpr){
+            SootClass targetClass = targetMethod.getDeclaringClass();
+            HashSet<SootClass> subClasses = new HashSet<>();
+            subClasses.addAll(Scene.v().getFastHierarchy().getAllImplementersOfInterface(targetClass));
             for (SootClass subClass : subClasses) {
                 SootMethod dispatchMethod = dispatch(subClass, targetMethod);
                 result.add(dispatchMethod);
