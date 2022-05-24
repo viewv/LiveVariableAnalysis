@@ -21,7 +21,7 @@ public class SootSetup {
         Options.v().set_output_format(Options.output_format_jimple);
         Options.v().set_process_dir(Collections.singletonList(sourceDirectory));
         Options.v().set_whole_program(true);
-        // Options.v().set_verbose(true);
+        //Options.v().set_verbose(true);
         // Jimple body set use the original names
         Options.v().setPhaseOption("jb","use-original-names:true");
 
