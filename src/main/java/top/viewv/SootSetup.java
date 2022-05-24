@@ -6,7 +6,7 @@ import soot.options.Options;
 import java.util.Collections;
 
 public class SootSetup {
-    public static void initSoot(String sourceDirectory, String classname) {
+    public static void initSoot(String sourceDirectory) {
         // Initialize Soot
         G.reset();
 
@@ -25,10 +25,8 @@ public class SootSetup {
         // Jimple body set use the original names
         Options.v().setPhaseOption("jb","use-original-names:true");
 
-        SootClass sootClass = Scene.v().loadClassAndSupport(classname);
-        sootClass.setApplicationClass();
+        //SootClass sootClass = Scene.v().loadClassAndSupport(classname);
+        //sootClass.setApplicationClass();
         Scene.v().loadNecessaryClasses();
-
-        //PackManager.v().runPacks();
     }
 }

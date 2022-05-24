@@ -10,8 +10,14 @@ public class Dispatch implements InterfaceDemo {
 
     class C extends B {
         public void foo() {
+            Dispatch.test();
+            Dispatch.bar();
             System.out.println("C.foo");
         }
+    }
+
+    public static void bar() {
+        System.out.println("bar");
     }
 
     public static void test(){

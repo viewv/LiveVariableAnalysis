@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Main {
@@ -30,10 +31,10 @@ public class Main {
         }
 
         String path = argList.get(0);
+        SootSetup.initSoot(path);
 
         for (String className: SourceLocator.v().getClassesUnder(path)) {
             System.out.println("Class: " + className);
-            SootSetup.initSoot(path, className);
             SootClass sc = Scene.v().getSootClass(className);
             for (SootMethod method : sc.getMethods()) {
                 if (method.getName().contains("main")) {
@@ -42,7 +43,15 @@ public class Main {
                     Body body = method.retrieveActiveBody();
                     CompleteUnitGraph graph = new CompleteUnitGraph(body);
 
-                    CHACallGraph callGraph = new CHACallGraph(method);
+                    CHACallGraph chaCallGraph = new CHACallGraph(method, true);
+
+                    HashMap<Unit, HashSet<SootMethod>> callGraph = chaCallGraph.getCallGraph();
+                    List<SootMethod> reachableMethods = chaCallGraph.getReachableMethods();
+
+                    System.out.println("reachable Method:" + reachableMethods.size());
+                    for (SootMethod reachableMethod : reachableMethods) {
+                        System.out.println(reachableMethod.getSubSignature());
+                    }
 
 //                    ConstantPropagation cp = new ConstantPropagation(graph);
 //
@@ -81,7 +90,6 @@ public class Main {
 //                    }
                 }
             }
-            PackManager.v().writeOutput(); //must place after analysis
         }
     }
 }

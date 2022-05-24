@@ -8,58 +8,79 @@ import java.util.*;
 public class CHACallGraph {
     private SootMethod entryMethod;
 
+    private Boolean enableFilter;
+
+    private HashMap<Unit, HashSet<SootMethod>> callGraph = new HashMap<>();
+    private List<SootMethod> reachableMethods = new ArrayList<>();
+
+    public CHACallGraph(SootMethod entryMethod, Boolean enableFilter) {
+        this.entryMethod = entryMethod;
+        this.enableFilter = enableFilter;
+        this.analyze();
+    }
+
     public CHACallGraph(SootMethod entryMethod) {
         this.entryMethod = entryMethod;
+        this.enableFilter = true;
         this.analyze();
+    }
+
+    public HashMap<Unit, HashSet<SootMethod>> getCallGraph() {
+        return callGraph;
+    }
+
+    public List<SootMethod> getReachableMethods() {
+        return reachableMethods;
     }
 
     private void analyze() {
         Queue<SootMethod> workList = new LinkedList<>();
         workList.add(entryMethod);
 
-        List<SootMethod> reachableMethods = new ArrayList<>();
-        HashMap<Unit, HashSet<SootMethod>> callGraph = new HashMap<>();
-
         while (!workList.isEmpty()) {
             SootMethod method = workList.poll();
             if (!reachableMethods.contains(method)) {
                 reachableMethods.add(method);
-                if (method.hasActiveBody()){
+                try {
                     Body body = method.retrieveActiveBody();
                     for (Unit unit : body.getUnits()) {
                         if (unit instanceof InvokeStmt) {
                             InvokeStmt invokeStmt = (InvokeStmt) unit;
-                            HashSet<SootMethod> callees = resolve(invokeStmt);
-                            for (SootMethod callee : callees) {
+                            SootMethod targetMethod = invokeStmt.getInvokeExpr().getMethod();
+                            if (enableFilter && targetMethod.getDeclaringClass().isJavaLibraryClass()) {
                                 if (!callGraph.containsKey(unit)) {
                                     callGraph.put(unit, new HashSet<>());
                                 }
-                                callGraph.get(unit).add(callee);
-                                if (!reachableMethods.contains(callee)) {
+                                callGraph.get(unit).add(targetMethod);
+                            }else {
+                                HashSet<SootMethod> callees = resolve(invokeStmt);
+                                for (SootMethod callee : callees) {
+                                    if (!callGraph.containsKey(unit)) {
+                                        callGraph.put(unit, new HashSet<>());
+                                    }
+                                    callGraph.get(unit).add(callee);
                                     workList.add(callee);
                                 }
                             }
                         }
                     }
+                } catch (Exception ignored) {
                 }
             }
         }
-        System.out.println("Reachable Methods: " + reachableMethods);
-        System.out.println("Call Graph: " + callGraph);
     }
 
     private HashSet<SootMethod> resolve(InvokeStmt invokeStmt) {
         HashSet<SootMethod> result = new HashSet<>();
         InvokeExpr invokeExpr = invokeStmt.getInvokeExpr();
         SootMethod targetMethod = invokeExpr.getMethod();
+        SootClass targetClass = targetMethod.getDeclaringClass();
         if (invokeExpr instanceof StaticInvokeExpr){
             result.add(targetMethod);
         }else if (invokeExpr instanceof SpecialInvokeExpr){
-            SootClass targetClass = targetMethod.getDeclaringClass();
             SootMethod dispatchMethod = dispatch(targetClass, targetMethod);
             result.add(dispatchMethod);
         }else if (invokeExpr instanceof VirtualInvokeExpr){
-            SootClass targetClass = targetMethod.getDeclaringClass();
             while (targetClass.hasSuperclass()){
                 targetClass = targetClass.getSuperclass();
             }
@@ -71,13 +92,14 @@ public class CHACallGraph {
                 result.add(dispatchMethod);
             }
         }else if (invokeExpr instanceof InterfaceInvokeExpr){
-            SootClass targetClass = targetMethod.getDeclaringClass();
             HashSet<SootClass> subClasses = new HashSet<>();
             subClasses.addAll(Scene.v().getFastHierarchy().getAllImplementersOfInterface(targetClass));
             for (SootClass subClass : subClasses) {
                 SootMethod dispatchMethod = dispatch(subClass, targetMethod);
                 result.add(dispatchMethod);
             }
+        }else {
+            result.add(targetMethod);
         }
         return result;
     }
