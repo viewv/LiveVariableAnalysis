@@ -13,6 +13,8 @@ public class CHACallGraph {
     private HashMap<Unit, HashSet<SootMethod>> callGraph = new HashMap<>();
     private List<SootMethod> reachableMethods = new ArrayList<>();
 
+    private HashMap<Unit, SootMethod> unitSootMethodHashMap = new HashMap<>();
+
     public CHACallGraph(SootMethod entryMethod, Boolean enableFilter) {
         this.entryMethod = entryMethod;
         this.enableFilter = enableFilter;
@@ -33,6 +35,10 @@ public class CHACallGraph {
         return reachableMethods;
     }
 
+    public HashMap<Unit, SootMethod> getUnitSootMethodHashMap() {
+        return unitSootMethodHashMap;
+    }
+
     private void analyze() {
         Queue<SootMethod> workList = new LinkedList<>();
         workList.add(entryMethod);
@@ -47,6 +53,9 @@ public class CHACallGraph {
                         if (unit instanceof InvokeStmt) {
                             InvokeStmt invokeStmt = (InvokeStmt) unit;
                             SootMethod targetMethod = invokeStmt.getInvokeExpr().getMethod();
+                            if (!unitSootMethodHashMap.containsKey(unit)){
+                                unitSootMethodHashMap.put(unit, method);
+                            }
                             if (enableFilter && targetMethod.getDeclaringClass().isJavaLibraryClass()) {
                                 if (!callGraph.containsKey(unit)) {
                                     callGraph.put(unit, new HashSet<>());
